@@ -11,7 +11,7 @@ warnings.filterwarnings("ignore", category=UserWarning)
 
 print("🤖 Initializing scikit-learn Weather Predictor...")
 
-# 1. Load your saved local weather dataset
+# Load your saved local weather dataset
 try:
     master_df = pd.read_csv('austin_weather_history.csv')
 
@@ -32,7 +32,7 @@ df_ml['Temp_Lag_2'] = df_ml['Temperature (°F)'].shift(2)
 # Drop missing rows created by shifting data windows
 df_ml = df_ml.dropna()
 
-# 3. SPLIT DATA INTO TRAINING AND TESTING SETS (Using pure integers)
+# SPLIT DATA INTO TRAINING AND TESTING SETS (Using pure integers)
 train_data = df_ml[df_ml['Year'] != 2026]
 test_data = df_ml[df_ml['Year'] == 2026]
 
@@ -50,12 +50,12 @@ y_train = train_data['Temperature (°F)']
 X_test = test_data[features]
 y_test = test_data['Temperature (°F)']
 
-# 4. INITIALIZE AND TRAIN THE LINEAR REGRESSION MODEL
+# INITIALIZE AND TRAIN THE LINEAR REGRESSION MODEL
 model = LinearRegression()
 model.fit(X_train, y_train)
 print("✅ Machine Learning Model training complete.")
 
-# 5. PREDICT THE NEXT 12 HOURS
+# PREDICT THE NEXT 12 HOURS
 test_data = test_data.copy()
 test_data['Predicted Temperature'] = model.predict(X_test)
 
@@ -71,7 +71,7 @@ plot_melted = pd.melt(
     value_name='Temperature'
 )
 
-# 6. VISUALIZE ACTUAL VS PREDICTED TRENDS
+# VISUALIZE ACTUAL VS PREDICTED TRENDS
 plt.figure(figsize=(12, 6))
 sns.set_theme(style="darkgrid")
 
@@ -95,30 +95,28 @@ cursor = mplcursors.cursor(line_plot, hover=True)
 
 @cursor.connect("add")
 def on_add(sel):
-    # 1. Round the decimal index position down to the closest whole row integer
-    row_index = int(round(sel.index))
+    #Grab the raw numerical X index position and the visual Y temperature directly from the graph space point coordinates
+    x_coord, y_coord = sel.target
 
-    # 2. Extract the clean X-axis hour timestamp text label smoothly
+    # Round the numerical X position safely to find the exact whole hour mark index
+    hour_index = int(round(x_coord))
     unique_hours = plot_melted['Hour'].unique()
 
-    if 0 <= row_index < len(unique_hours):
-        hour_label = unique_hours[row_index]
+    if 0 <= hour_index < len(unique_hours):
+        hour_label = unique_hours[hour_index]
 
-        # 3. Filter melted DataFrame down to just this specific hour
+        # Filter your data matrix down to only rows matching this exact hour tag
         hour_rows = plot_melted[plot_melted['Hour'] == hour_label]
-
-        # 4. Find the row in that hour chunk where the temperature matches closest
-        # This accurately tells us if you are hovering near the purple 'Actual' line or orange 'Predicted' line
-        closest_row = hour_rows.iloc[(hour_rows['Temperature'] - sel.target).abs().argsort()[:1]]
+        closest_row = hour_rows.iloc[(hour_rows['Temperature'] - y_coord).abs().argsort()[:1]]
 
         data_type = closest_row['Data Type'].values[0]
         actual_temp = closest_row['Temperature'].values[0]
 
-        # Format label text cleanly
+        # Format the badge texts cleanly
         label_name = "Actual" if data_type == "Temperature (°F)" else "ML Prediction"
         sel.annotation.set_text(f"{hour_label} | {label_name}\nTemp: {actual_temp:.1f}°F")
     else:
-        sel.annotation.set_text(f"{sel.target:.1f}°F")
+        sel.annotation.set_text(f"{y_coord:.1f}°F")
 
     sel.annotation.get_bbox_patch().set(fc="white", alpha=0.9, boxstyle="round,pad=0.5")
 
