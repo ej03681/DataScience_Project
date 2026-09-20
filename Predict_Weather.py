@@ -17,6 +17,7 @@ try:
     # FIX: Force the Year column to integers to prevent data filtering dropouts
     master_df['Year'] = master_df['Year'].astype(str).str.extract(r'(\d+)').astype(int)
 
+
 except FileNotFoundError:
     print("❌ Error: 'austin_weather_history.csv' not found! Run your downloader script first.")
     exit()
@@ -26,10 +27,11 @@ df_ml = master_df.copy()
 df_ml['Temp_Lag_1'] = df_ml['Temperature (°F)'].shift(1)
 df_ml['Temp_Lag_2'] = df_ml['Temperature (°F)'].shift(2)
 
-print(df_ml[['Year', 'Hour', 'Temperature (°F)', 'Temp_Lag_1', 'Temp_Lag_2']])
-print("--------------------------------------------\n")
+
 # Drop missing rows created by shifting data windows
 df_ml = df_ml.dropna()
+print(df_ml[['Year', 'Hour', 'Temperature (°F)', 'Temp_Lag_1', 'Temp_Lag_2']])
+print("--------------------------------------------\n")
 
 # 3. SPLIT DATA INTO TRAINING AND TESTING SETS (Using pure integers)
 train_data = df_ml[df_ml['Year'] != 2026]
