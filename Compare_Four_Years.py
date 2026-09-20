@@ -12,7 +12,7 @@ warnings.filterwarnings("ignore", category=UserWarning, module="mplcursors")
 print("📖 Reading localized weather files into Pandas DataFrame...")
 
 try:
-    # Load your saved local weather dataset
+    # Load dataset
     master_df = pd.read_csv('austin_weather_history.csv')
 except FileNotFoundError:
     print("Error: 'austin_weather_history.csv' not found! Make sure to run download_data.py first.")
@@ -22,7 +22,7 @@ except FileNotFoundError:
 plt.figure(figsize=(12, 6))
 sns.set_theme(style="darkgrid")
 
-# FIX: Removed sort=False so Seaborn assigns the true year names to the line paths
+# Seaborn assigns the true year names to the line paths
 line_plot = sns.lineplot(
     data=master_df,
     x='Hour',
@@ -34,7 +34,7 @@ line_plot = sns.lineplot(
     markersize=8
 )
 
-# Connect interactive mouse hover tooltip functionality
+# Connect interactive mouse hover functionality inspired by meteo.com graph
 cursor = mplcursors.cursor(line_plot, hover=True)
 
 

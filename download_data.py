@@ -12,7 +12,7 @@ target_date_part = "09-15"
 display_date = "September 15"
 
 # The target year sequences we want to capture
-target_years = [2026, 2025, 2023, 2022]
+target_years = [2022, 2023, 2024, 2025, 2026]
 HISTORICAL_URL = "https://archive-api.open-meteo.com/v1/archive"
 
 print(f"🚀 Initializing API Downloader for {location_name}...")
