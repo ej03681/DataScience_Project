@@ -8,11 +8,11 @@ lon = -97.7431
 location_name = "Austin, United States"
 
 # FIX: Force a completed past calendar date window to guarantee data exists
-target_date_part = "09-15"
-display_date = "September 15"
+target_date_part = "09-18"
+display_date = "September 18"
 
 # The target year sequences we want to capture
-target_years = [2022, 2023, 2024, 2025, 2026]
+target_years = [2010, 2014, 2018, 2022, 2026]
 HISTORICAL_URL = "https://archive-api.open-meteo.com/v1/archive"
 
 print(f"🚀 Initializing API Downloader for {location_name}...")

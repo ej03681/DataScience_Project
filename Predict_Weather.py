@@ -4,6 +4,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
 import warnings
+import mplcursors
 
 # Mute standard background warnings
 warnings.filterwarnings("ignore", category=UserWarning)
@@ -30,8 +31,6 @@ df_ml['Temp_Lag_2'] = df_ml['Temperature (°F)'].shift(2)
 
 # Drop missing rows created by shifting data windows
 df_ml = df_ml.dropna()
-print(df_ml[['Year', 'Hour', 'Temperature (°F)', 'Temp_Lag_1', 'Temp_Lag_2']])
-print("--------------------------------------------\n")
 
 # 3. SPLIT DATA INTO TRAINING AND TESTING SETS (Using pure integers)
 train_data = df_ml[df_ml['Year'] != 2026]
@@ -90,6 +89,38 @@ line_plot = sns.lineplot(
     markersize=8,
     sort=False
 )
+# Connect interactive mouse hover tooltip functionality
+cursor = mplcursors.cursor(line_plot, hover=True)
+
+
+@cursor.connect("add")
+def on_add(sel):
+    # 1. Round the decimal index position down to the closest whole row integer
+    row_index = int(round(sel.index))
+
+    # 2. Extract the clean X-axis hour timestamp text label smoothly
+    unique_hours = plot_melted['Hour'].unique()
+
+    if 0 <= row_index < len(unique_hours):
+        hour_label = unique_hours[row_index]
+
+        # 3. Filter melted DataFrame down to just this specific hour
+        hour_rows = plot_melted[plot_melted['Hour'] == hour_label]
+
+        # 4. Find the row in that hour chunk where the temperature matches closest
+        # This accurately tells us if you are hovering near the purple 'Actual' line or orange 'Predicted' line
+        closest_row = hour_rows.iloc[(hour_rows['Temperature'] - sel.target).abs().argsort()[:1]]
+
+        data_type = closest_row['Data Type'].values[0]
+        actual_temp = closest_row['Temperature'].values[0]
+
+        # Format label text cleanly
+        label_name = "Actual" if data_type == "Temperature (°F)" else "ML Prediction"
+        sel.annotation.set_text(f"{hour_label} | {label_name}\nTemp: {actual_temp:.1f}°F")
+    else:
+        sel.annotation.set_text(f"{sel.target:.1f}°F")
+
+    sel.annotation.get_bbox_patch().set(fc="white", alpha=0.9, boxstyle="round,pad=0.5")
 
 plt.title(
     "Scikit-Learn 12-Hour Weather Prediction Model\nActual 2026 Forecast vs. Machine Learning Predictions (Austin, TX)",
