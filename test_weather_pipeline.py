@@ -4,7 +4,7 @@ import os
 from sklearn.linear_model import LinearRegression
 
 
-# 1. TEST DATA INTERGITY: Verify that the local CSV data asset exists and is populated
+# TEST DATA INTERGITY: Verify that the local CSV data asset exists and is populated
 def test_csv_file_exists():
     filename = 'austin_weather_history.csv'
     # Assert that the file is physically present in the directory
@@ -15,7 +15,7 @@ def test_csv_file_exists():
     assert not df.empty, "The saved weather database CSV is completely empty!"
 
 
-# 2. TEST FEATURE ENGINEERING: Verify that our .shift() logic computes correctly
+# TEST FEATURE ENGINEERING: Verify that our .shift() logic computes correctly
 def test_pandas_lag_features():
     # Construct a mini mock dataframe to test transformation shapes
     mock_data = pd.DataFrame({
@@ -38,7 +38,7 @@ def test_pandas_lag_features():
     assert row_02am['Temp_Lag_2'] == 70.0, "Temp_Lag_2 calculation index is incorrect!"
 
 
-# 3. TEST MACHINE LEARNING SYSTEM: Verify the scikit-learn model outputs valid data shapes
+# EST MACHINE LEARNING SYSTEM: Verify the scikit-learn model outputs valid data shapes
 def test_model_prediction_outputs():
     # Mock clean arrays for training inputs
     X_train = np.array([[70, 68], [72, 70], [74, 72], [76, 74]])

@@ -5,10 +5,10 @@ import matplotlib.pyplot as plt
 import mplcursors
 import warnings
 
-# 1. Ask user for a target city
+# Ask user for a target city
 city_name = input("Enter a city name (e.g., Austin, Paris, Tokyo): ")
 
-# 2. Query the Open-Meteo Geocoding API to get the city's coordinates
+# Query the Open-Meteo Geocoding API to get the city's coordinates
 GEO_URL = "https://geocoding-api.open-meteo.com/v1/search"
 geo_params = {"name": city_name, "count": 1}
 
@@ -25,7 +25,7 @@ if geo_response.status_code == 200 and geo_response.json().get("results"):
     print(f"Found: {resolved_name} (Lat: {lat}, Lon: {lon})")
 
 
-    # 3. Fetch weather data using the resolved coordinates
+    # Fetch weather data using the resolved coordinates
     WEATHER_URL = "https://api.open-meteo.com/v1/forecast"
     weather_params = {
         "latitude": lat,
@@ -52,7 +52,7 @@ if geo_response.status_code == 200 and geo_response.json().get("results"):
 
         forecast_date = df_12h['Time'].iloc[0].strftime('%B %d, %Y')
 
-        # 5. Build the Seaborn plot
+        # Build the Seaborn plot
         plt.figure(figsize=(12, 6))
         sns.set_theme(style="darkgrid")
 
