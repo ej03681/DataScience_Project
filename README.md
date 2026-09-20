@@ -11,6 +11,7 @@ The project repository is partitioned into modular data engineering, analytics, 
 *   **`Compare_Four_Years.py`**: Reads the offline local dataset into a Pandas DataFrame and deploys Seaborn to map overlapping 12-hour temperature trajectories across custom-built historical baselines with interactive `mplcursors` hover badges.
 *   **`Predict_Weather.py`**: Transmutes time-series rows into a supervised learning matrix via lagged window features (`shift(1)` and `shift(2)`). Trains a scikit-learn `LinearRegression` model on historical seasons to forecast upcoming local conditions.
 *   **`austin_weather_history.csv`**: The local dataset cache holding clean structured columns for `Hour`, `Temperature (°F)`, and `Year`.
+*   **`test_weather_pipeline.py`**: Mini mock dataframe construct for testing
 
 ## ⚙️ Data Engineering Pipeline
 
@@ -28,3 +29,4 @@ To avoid script crashes from server-side rate limits or data stream drops, the a
 3. Run (`The_magic.py`) once prompted to enter city, enter city you would like to look at. 12 hour forecast chart is executed.
 4. Run your downloader script (`download_data.py`) once to initialize the local CSV data file cache.
 5. Run `Compare_Four_Years.py` to launch the historical chart interface or execute `Predict_Weather.py` to evaluate the machine learning predictions.
+6. Run `test_weather_pipeline.py` to launch prediction model mock dataframe testing.
